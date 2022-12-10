@@ -92,3 +92,32 @@ users.post('/login',(req,res)=>{
         });
     })
 });
+
+//user profile
+users.get('/profile',(req,res)=>{
+    const decode =jwt.verify(req.headers['authorization'],process.env.SECRET_KET);
+
+    User.findOne({
+        _id:decode._id
+    }).then(user=>{
+        if(user){
+            res.json({
+                status:200,
+                data:user
+            });
+        }else{
+            res.json({
+                status:422,
+                message:'unauthorization'
+            });
+        }
+    }).catch(error=>{
+        res.json({
+            status:500,
+            message:'some error has occur',
+            error:error
+        });
+    });
+});
+
+module.exports=users;
